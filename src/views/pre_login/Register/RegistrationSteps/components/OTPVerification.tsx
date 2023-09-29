@@ -4,8 +4,10 @@ import { useNavigate } from "react-router-dom";
 import {useForm} from "react-hook-form"; 
 import { yupResolver } from "@hookform/resolvers/yup";
 import { otpValidationSchema } from "../../../../../common/validations/loginValidations";
-import loginSlice, { mobileOtp } from "../../../../../redux/pages/loginSlice";
+import loginSlice, { mobileOtp, } from "../../../../../redux/pages/loginSlice";
 import OTPInput from "react-otp-input";
+import { getcourseCategory } from "../../../../../redux/pages/courseSlice";
+
 
 interface IVOtp{
   setIndex:(data:any)=>void;
@@ -14,8 +16,9 @@ interface IVOtp{
 
 const OTPVerification = forwardRef<any,IVOtp>((props,ref) => {
 const {
-    setIndex=()=>{},phoneNumber
+  setIndex=()=>{},phoneNumber
  }=props;
+ 
 const [minutes,setMinutes] = useState(1)
 const [seconds,setSeconds] =useState(30)
 const otpFormRef = useRef<any>();
@@ -63,10 +66,11 @@ const resendOtp = ()=>{
   setSeconds(30);
 }
 
-const onSubmit =(data: any )=>{
+const onSubmit = async (data: any )=>{
   if(data){
   const { otp } = data;
-  dispatch(mobileOtp({otp, phone:phoneNumber},setIndex))
+   await dispatch(mobileOtp({otp, phone:phoneNumber},setIndex));
+  dispatch(getcourseCategory());
   console.log(otp,"otp ")
   console.log(phoneNumber,"phone")
   }
@@ -82,7 +86,7 @@ const onSubmit =(data: any )=>{
           onChange={(Value) =>setValue("otp",Value)}
           numInputs={5}
           renderSeparator={<span>&nbsp;&nbsp; </span>}
-          renderInput={(props) => <input {...props} className="otpinput"/>}
+          renderInput={(props) => <input {...props} className="otpinput"  inputMode="numeric"/>}
         />
         </div>
         </form>

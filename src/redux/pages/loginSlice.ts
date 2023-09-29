@@ -3,6 +3,9 @@ import { AppThunk } from "../store";
 import { axiosInstance } from "../../common/interceptors/axiosConfig";
 import { showNotification } from "../../common/toast/toast";
 import axios from "axios";
+import { error } from "console";
+import { useNavigate } from "react-router-dom";
+
 
 export interface LoginState {
     errors: any;
@@ -165,8 +168,7 @@ export const mobileOtp = (body: { otp: string, phone: string }, setIndex:any): A
     console.log(body,"bodyyy")
     try{
         const URL = 'verify/phone/otp';
-        const response = await axiosInstance({data: {url:URL,method: 'post',data:body}, token:true});
-       
+        const response = await axiosInstance({data: {url:URL,method: 'post',data:body}, token:true}); 
         if (response.data){
             dispatch(setLoading(false));
             if(response.data && response.data.status === 'success'){
@@ -178,6 +180,27 @@ export const mobileOtp = (body: { otp: string, phone: string }, setIndex:any): A
         dispatch(setErrors(error?.response));
     }
 };
+
+
+export const registerFinish =(body: any, setIndex:any):AppThunk => async (dispatch)=>{
+    dispatch(setLoading(true));
+    console.log(body,"regfinishbody")
+    try{
+        let URL = 'register/finish';
+        const response = await axiosInstance({data: {url: URL, method: 'post',data:body},token: true});
+        if(response.data){
+            console.log(response.data,"responceee")
+            dispatch(setLoading(false));
+            if(response.data.status && response.data.status ==='success'){
+               
+            }
+            
+        }
+    }catch (error:any){
+        dispatch(setLoading(false));
+        dispatch(setErrors(error?.response));
+    }
+}
 
 
 export const {

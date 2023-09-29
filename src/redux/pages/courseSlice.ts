@@ -7,12 +7,14 @@ export interface courseState {
     isLoading: boolean;
     courseList: any;
     successFlag: boolean;
+    courseCategory: any[];
 }
 
 const initialState: courseState = {
     errors: null,
     isLoading: false,
     courseList: [],
+    courseCategory:[],
     successFlag: false,
 };
 
@@ -28,6 +30,9 @@ const courseSlice = createSlice({
         },
         setCourseList: (state, { payload }: PayloadAction<any>) => {
             state.courseList = payload;
+        },
+        setCourseCategory: (state, { payload }: PayloadAction<any>) => {
+            state.courseCategory = payload;
         },
     }
 });
@@ -51,10 +56,33 @@ export const getCourseList = (): AppThunk => async (dispatch) => {
     }
 };
 
+
+export const getcourseCategory = (): AppThunk => async (dispatch) => {
+    dispatch(setLoading(true));
+    try {
+        let URL = '/program/list';
+        const response = await axiosInstance({ data: { url: URL, method: 'post', data: null }, token: true });
+        if (response.data) {
+            if (response.data.status && response.data.status === 'success') {              
+                dispatch(setCourseCategory(response?.data?.program)) 
+                dispatch(setLoading(false));   
+            }
+        }
+    } catch (error: any) {
+        dispatch(setLoading(false));
+        dispatch(setErrors(error?.response))
+    }
+};
+
+
+
+
+
 export const {
     setLoading,
     setErrors,
     setCourseList,
+    setCourseCategory,
 } = courseSlice.actions;
 
 export default courseSlice.reducer;

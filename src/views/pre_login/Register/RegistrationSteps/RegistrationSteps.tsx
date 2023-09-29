@@ -12,6 +12,7 @@ import MobileNumberVerification from "./components/MobileNumberVerification";
 
 const RegistrationSteps = () => {
   const mobileVarificationRef = useRef <any>();
+  const registerFinishRef  =useRef <any>();
   const mobileOtpRef= useRef <any>();
   const [activeStep, setActiveStep] = useState(0);
   const [phoneNumber,setPhoneNumber] =useState<any>("")
@@ -24,7 +25,8 @@ const RegistrationSteps = () => {
   const handlePhoneNumberChange = (newPhoneNumber:string) => {
     setPhoneNumber(newPhoneNumber);
   };
-  
+
+
   const createRegistrationFormSection = useCallback(() => {
     switch (activeStep) {
       case 0:
@@ -32,7 +34,7 @@ const RegistrationSteps = () => {
       case 1:
         return <OTPVerification ref={mobileOtpRef} setIndex={setActiveStep}  phoneNumber={phoneNumber}/>;
       case 2:
-        return <CategorySelection />;
+        return <CategorySelection  ref={registerFinishRef } setIndex={setActiveStep}  />;
       default:
         return null;
     }
@@ -44,10 +46,10 @@ const RegistrationSteps = () => {
         return mobileVarificationRef?.current?.onSaveTrigger();
                case 1:
              return   mobileOtpRef?.current?.onSaveOtpTrigger();
-        //      case 2:
-        //       return <CategorySelection />
-        //       default:
-        //         return null;
+             case 2:
+              return   registerFinishRef?.current?.onSaveFinishTrigger();
+              default:
+                return null;
     }
   };
 
