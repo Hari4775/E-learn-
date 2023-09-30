@@ -12,22 +12,38 @@ import { useLocation } from "react-router-dom";
 import ForgotPasswordForm from "./components/ForgotPasswordForm/ForgotPasswordForm";
 
 const Login = () => {
-
+  const [email, setEmail] = useState("");
   const location = useLocation();
   const pathname = location.pathname;
+  const [password, setPassword] = useState<any>("");
+  const [confirm_password, setConfirm_Password] = useState<any>("");
+
+  const handleEmailChange = (newEmail: string) => {
+    setEmail(newEmail);
+  };
+
+  const onPasswordChange = (newPassword: string) => {
+    setPassword(newPassword);
+  };
+  const onResetPasswordChange = (newPassword: string) => {
+    setConfirm_Password(newPassword);
+  };
+
+  console.log(password, "passweorsss");
+  console.log(confirm_password, "password,passweorsss");
 
   const formTemplate = useCallback(() => {
     switch (pathname) {
       case "/login":
-        return <LoginForm />
+        return <LoginForm />;
       case "/forgot-password":
-        return <ForgotPasswordForm />;
+        return <ForgotPasswordForm onEmailChange={handleEmailChange} />;
       case "/reset-password":
         return <ResetPasswordForm />;
       case "/submit-otp":
-        return <OTPForm />;
+        return <OTPForm email={email} />;
     }
-  }, [pathname]);
+  }, [pathname, email]);
 
   return (
     <div className="login">
@@ -78,7 +94,7 @@ const Login = () => {
           <div className="right-sec">
             <div className="form-area">
               <h4 className="logo-title d-block d-lg-none">Assurance</h4>
-                {formTemplate()}
+              {formTemplate()}
             </div>
           </div>
         </div>

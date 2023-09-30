@@ -69,7 +69,7 @@ const resendOtp = ()=>{
 const onSubmit = async (data: any )=>{
   if(data){
   const { otp } = data;
-   await dispatch(mobileOtp({otp, phone:phoneNumber},setIndex));
+  await dispatch(mobileOtp({otp, phone:phoneNumber},setIndex));
   dispatch(getcourseCategory());
   console.log(otp,"otp ")
   console.log(phoneNumber,"phone")
@@ -91,32 +91,6 @@ const onSubmit = async (data: any )=>{
         </div>
         </form>
 
-        
-          {/* <input
-            className="form-control otp-field"
-            maxLength={1}
-            placeholder="0"
-          />
-          <input
-            className="form-control otp-field"
-            maxLength={1}
-            placeholder="0"
-          />
-          <input
-            className="form-control otp-field"
-            maxLength={1}
-            placeholder="0"
-          />
-          <input
-            className="form-control otp-field"
-            maxLength={1}
-            placeholder="0"
-          />
-          <input
-            className="form-control otp-field"
-            maxLength={1}
-            placeholder="0"
-          /> */}
         <div className="d-flex justify-content-between mt-2">
           <div>
           <p className="desc">Resend OTP in</p>

@@ -39,3 +39,26 @@ export const otpValidationSchema = Yup.object({
      .matches(/^\d+$/, "OTP must only contain digits")
      .required("OTP is required"),
  });
+
+export const emailValidationSchema = Yup.object({
+   email:Yup.string()
+   .required('Email ID  required')
+   .matches(
+   /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+   )
+})
+
+
+export const resetPasswordSchema= Yup.object({
+   password: Yup.string().required('No password provided.')
+     .min(8, 'Password is too short - should be 8 chars minimum.'),
+   confirm_password: Yup.string().required('No password provided.')
+     .min(8, 'Password is too short - should be 8 chars minimum.'),
+ }).required();
+
+ export const formatEmail = (email: string): string => {
+   const [start, end] = email.split('@');
+   const visibleStart = start.slice(0, 3); // Display the first two characters
+   const visibleEnd = end.slice(-3); // Display the last four characters
+   return `${visibleStart}***@***${visibleEnd}`;
+ };

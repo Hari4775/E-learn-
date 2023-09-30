@@ -6,36 +6,33 @@ import { ReactComponent as EyeSlashedIcon } from "../../../../../assets/icons/ic
 import { ReactComponent as MailIcon } from "../../../../../assets/icons/icon-email.svg";
 import { ReactComponent as InfoCircleIcon } from "../../../../../assets/icons/icon-info-circle.svg";
 import { Link, useNavigate } from "react-router-dom";
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../../../../redux/hooks";
 import { login } from "../../../../../redux/pages/loginSlice";
 import { loginSchema } from "../../../../../common/validations/loginValidations";
 
 interface IVLogin {
-  email: string,
-  password: string
+  email: string;
+  password: string;
 }
 
 const LoginForm = () => {
-
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
   } = useForm<IVLogin>({
-    resolver: yupResolver(loginSchema)
+    resolver: yupResolver(loginSchema),
   });
 
   const navigate = useNavigate();
 
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
-
   const dispatch = useDispatch<any>();
   const isLoading = useAppSelector((state) => state.login.isLoading);
-
   const handlePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
@@ -149,7 +146,11 @@ const LoginForm = () => {
             </div>
 
             <div className="d-flex justify-content-center mt-2">
-              <Link to="/forgot-password" role="button" className="btn btn-link text-blue">
+              <Link
+                to="/forgot-password"
+                role="button"
+                className="btn btn-link text-blue"
+              >
                 Forgot Password?
               </Link>
             </div>

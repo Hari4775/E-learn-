@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 
 import { ReactComponent as LockDotsIcon } from "../../../../../assets/icons/icon-lock-dots.svg";
 import { ReactComponent as LockIcon } from "../../../../../assets/icons/icon-lock.svg";
@@ -7,29 +7,37 @@ import { ReactComponent as EyeSlashedIcon } from "../../../../../assets/icons/ic
 import { ReactComponent as InfoCircleIcon } from "../../../../../assets/icons/icon-info-circle.svg";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
-import { useForm } from "react-hook-form"
-
+import { useForm } from "react-hook-form";
+import { resetPasswordSchema } from "../../../../../common/validations/loginValidations";
+import { passwordReset } from "../../../../../redux/pages/loginSlice";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 interface resetValidInterface {
-  password: string,
-  confirm_password: string
+  password : string;
+  confirm_password : string;
+
 }
 
-const ResetPasswordForm = () => {
 
+const ResetPasswordForm= () => {
 
-  const resetLoginSchema = yup.object({
-    password: yup.string().required('No password provided.')
-      .min(8, 'Password is too short - should be 8 chars minimum.'),
-    confirm_password: yup.string().required('No password provided.')
-      .min(8, 'Password is too short - should be 8 chars minimum.'),
-  }).required();
-
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<resetValidInterface>({
-    resolver: yupResolver(resetLoginSchema)
-  });
-
+  const navigate = useNavigate();
+  const dispatch = useDispatch<any>();
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+
+
+  const {
+    register,
+    handleSubmit,
+     watch,
+     setValue,
+    formState: { errors },
+   } = useForm<resetValidInterface>({
+    resolver: yupResolver(resetPasswordSchema)
+  });
+
 
   const handlePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -38,9 +46,30 @@ const ResetPasswordForm = () => {
     setConfirmPasswordVisible(!confirmPasswordVisible);
   };
 
-  const resetPasswordSubmit = (submitData: any) => {
 
-  }
+
+  const resetPasswordSubmit = async (submitData: any) => {
+    if (submitData) {
+      try {
+        if (submitData.password && submitData.confirm_password) {
+          console.log(submitData,"dkjfsdkjfh")
+          await dispatch(passwordReset({...submitData,setIsSuccess}));
+        } else {
+          console.error("Password and confirm_password fields are required.");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate("/login");
+      setIsSuccess(false);
+    }
+  }, [isSuccess,navigate]);
+
 
   return (
     <div className="form-area">
@@ -49,7 +78,7 @@ const ResetPasswordForm = () => {
       <p className="description">Reset your password here</p>
       <div>
         <div className="reset-password-form">
-          <form onSubmit={handleSubmit(resetPasswordSubmit)} action="">
+          <form onSubmit={handleSubmit(resetPasswordSubmit)} >
             <div className="form-control-wrap mb-3">
               <div className="d-flex justify-content-between">
                 <label className="form-label">Password</label>
@@ -91,6 +120,7 @@ const ResetPasswordForm = () => {
                   placeholder="Enter password"
                   {...register("password")}
                   name="password"
+                 
                 />
                 <div className="end-icon">
                   <button
@@ -131,8 +161,7 @@ const ResetPasswordForm = () => {
             </div>
             <div className="mb-4">
               <button
-                type="button"
-                role="button"
+                type="submit"
                 className="btn btn-lg btn-primary w-100"
               >
                 Confirm

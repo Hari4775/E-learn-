@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 // import { ReactComponent as LockDotsIcon } from "../../../../../assets/icons/icon-lock-dots.svg";
 // import { ReactComponent as LockIcon } from "../../../../../assets/icons/icon-lock.svg";
@@ -8,45 +9,63 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form"
 import { ReactComponent as MailIcon } from "../../../../../assets/icons/icon-email.svg"
 import { useDispatch } from "react-redux";
+import { emailValidationSchema } from "../../../../../common/validations/loginValidations";
+import { forgotPasswordEmailSubmit } from "../../../../../redux/pages/loginSlice";
+import RedirectRoute from "../../../../../routes/redirectRoute";
 
-interface forgotValidInterface {
-  email: string
+interface IVForgotEmail {
+  onEmailChange : (email : string )=>void;
 }
 
-const ForgotPasswordForm = () => {
-
-
-  const resetLoginSchema = yup.object({
-    email: yup.string().required(),
-  }).required();
-
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<forgotValidInterface>({
-    resolver: yupResolver(resetLoginSchema)
+const ForgotPasswordForm = ({onEmailChange}: IVForgotEmail) => {
+  const [isSuccess, setIsSucess] = useState<boolean>(false);
+  const navigate = useNavigate();
+ 
+  const {
+    handleSubmit,
+    setValue,
+     watch,
+    formState: { errors },
+   } = useForm({
+    resolver: yupResolver(emailValidationSchema)
   });
 
   const dispatch = useDispatch<any>()
 
-  const forgotPasswordSubmit = (submitData: any) => {
-    dispatch(forgotPasswordSubmit(submitData))
-  }
 
-  return (
+
+  const forgotPasswordSubmit =async (submitData: any) => {
+   if (submitData){
+    console.log(submitData,"submitdataa")
+    await dispatch(forgotPasswordEmailSubmit(submitData,setIsSucess));
+    onEmailChange(submitData.email)
+    }
+  }
+  
+  useEffect(() => {
+    if (isSuccess) {
+      navigate("/submit-otp");
+      setIsSucess(false)       
+    }
+  }, [isSuccess, navigate]);
+
+  return  (
     <div className="form-area">
       <h1 className="form-title">Reset password</h1>
       <p className="description">Enter your email below and submit to reset password. An email will be sent to you with instructions.</p>
       <div>
         <div className="login-form">
-          <form onSubmit={handleSubmit(forgotPasswordSubmit)} action="">
+          <form onSubmit={handleSubmit(forgotPasswordSubmit)} >
             <div className="form-control-wrap mb-3">
               <label className="form-label">Email Address</label>
               <div className="icon-form-control">
                 <div className="start-icon">
                   <MailIcon />
                 </div>
-                <input
+                <input 
+                 onChange={(e)=>{setValue("email",e.target.value)}}
                   className="form-control"
                   placeholder="Enter your email"
-                  {...register("email")}
                   name="email"
                 />
               </div>
